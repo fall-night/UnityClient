@@ -4,7 +4,7 @@ using UnityEngine;
 using Loom.Client;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
-public class SimpleStoreHandler : MonoBehaviour {
+public class SimpleStoreHandler2 : MonoBehaviour {
 
     // Select an ABI from our project resources
     // We got these from the migration script in Truffle
