@@ -126,11 +126,11 @@ public class SimpleStoreHandler : MonoBehaviour {
         [Parameter("string", "_state", 1)]
         public string State { get; set; }
         
-        [Parameter("uint", "_rank", 2)]
-        public BigInteger Rank { get; set; }
+        //[Parameter("uint", "_rank", 2)]
+        //public BigInteger Rank { get; set; }
         
-        [Parameter("uint", "_sender", 3)]
-        public BigInteger Sender { get; set; }
+        //[Parameter("uint", "_sender", 3)]
+        //public BigInteger Sender { get; set; }
     }
     
     private void EventReceivedHandler(object sender, EvmChainEventArgs e)
@@ -139,8 +139,8 @@ public class SimpleStoreHandler : MonoBehaviour {
             OnTestEvent onTestEvent = e.DecodeEventDTO<OnTestEvent>();
             // JsonTileMapState jsonTileMapState = JsonUtility.FromJson<JsonTileMapState>(onTileMapStateUpdateEvent.State);
             Debug.Log(onTestEvent.State);
-            Debug.Log(onTestEvent.Rank);
-            Debug.Log(onTestEvent.Sender);
+            //Debug.Log(onTestEvent.Rank);
+            //Debug.Log(onTestEvent.Sender);
         }
 
     }

@@ -5,6 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/Samples/Demo/Demo.unity
+  - enabled: 0
+    path: Assets/LoomSDK/Samples/Demo/Demo.unity
     guid: bb9636e0da82dac458521317a7211b8d
+  - enabled: 1
+    path: Assets/Scene/Lobby.unity
+    guid: 29ebedf813b33af4a8c5b5fa95fc2942
+  - enabled: 1
+    path: Assets/Scene/Base.unity
+    guid: dd0c4e4d25379420faf8f922f1b6f9cb
+  - enabled: 1
+    path: Assets/Scene/GameScene.unity
+    guid: 0b5a4106c77e7d54a96a747b431b4138
+  m_configObjects: {}
