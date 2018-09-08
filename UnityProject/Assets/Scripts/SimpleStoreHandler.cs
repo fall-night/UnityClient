@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Threading.Tasks;
 using UnityEngine;
 using Loom.Client;
@@ -20,8 +21,10 @@ public class SimpleStoreHandler : MonoBehaviour {
 
         // Get the contract
         var contract = await GetContract(privateKey, publicKey);
+        contract.EventReceived += EventReceivedHandler;
         // Make a call
-        await StaticCallContract(contract);
+        await CallContractTest(contract);
+        await StaticCallContract(contract);;
     }
 
     // Get's the contract as an object 
@@ -75,5 +78,41 @@ public class SimpleStoreHandler : MonoBehaviour {
         {
             Debug.LogError("Smart contract didn't return anything!");
         }
+    }
+    
+    
+    /* Test Code get Event Result */
+    private async Task CallContractTest(EvmContract contract)
+    {
+        if (contract == null)
+        {
+            throw new Exception("Not signed in!");
+        }
+        Debug.Log("Calling smart contract... testEvent");
+        
+        await contract.CallAsync("testEvent", 0);
+    }
+    private class OnTestEvent
+    {
+        [Parameter("string", "_state", 1)]
+        public string State { get; set; }
+        
+        [Parameter("uint", "_rank", 2)]
+        public BigInteger Rank { get; set; }
+        
+        [Parameter("uint", "_sender", 3)]
+        public BigInteger Sender { get; set; }
+    }
+    
+    private void EventReceivedHandler(object sender, EvmChainEventArgs e)
+    {
+        if (e.EventName == "GetTest") {
+            OnTestEvent onTestEvent = e.DecodeEventDTO<OnTestEvent>();
+            // JsonTileMapState jsonTileMapState = JsonUtility.FromJson<JsonTileMapState>(onTileMapStateUpdateEvent.State);
+            Debug.Log(onTestEvent.State);
+            Debug.Log(onTestEvent.Rank);
+            Debug.Log(onTestEvent.Sender);
+        }
+
     }
 }
