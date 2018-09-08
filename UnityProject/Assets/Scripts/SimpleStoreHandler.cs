@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,9 +12,15 @@ public class SimpleStoreHandler : MonoBehaviour {
     // We got these from the migration script in Truffle
     public TextAsset simpleStoreABI;
     public TextAsset simpleStoreAddress;
-
+    
+    private List<String> weapon_list = new List<String>();
+    private Dictionary<String, int> my_weapon_list = new Dictionary<string, int>();
+    
     // Use this for initialization
     public async void Start () {
+        this.weapon_list.Add("A");
+        this.weapon_list.Add("B");
+        
         // Generate new keys for this user
         // TODO - Either store these or let the user enter a private key
         var privateKey = CryptoUtils.GeneratePrivateKey();
@@ -22,7 +29,10 @@ public class SimpleStoreHandler : MonoBehaviour {
         // Get the contract
         var contract = await GetContract(privateKey, publicKey);
         contract.EventReceived += EventReceivedHandler;
+        
         // Make a call
+        await CallAcquireWeapon(contract, "A");
+        await CallGetWeaponList(contract);
         await CallContractTest(contract);
         await StaticCallContract(contract);;
     }
@@ -79,7 +89,26 @@ public class SimpleStoreHandler : MonoBehaviour {
             Debug.LogError("Smart contract didn't return anything!");
         }
     }
+
+    private async Task CallAcquireWeapon(EvmContract contract, string weapon)
+    {
+        await contract.CallAsync("acquireWeapon", weapon);
+    }
     
+    private async Task CallGetWeaponList(EvmContract contract)
+    {
+        for (var i = 0; i < this.weapon_list.Count; i++) {
+            Debug.Log(this.weapon_list[i]);
+            var result = await contract.StaticCallSimpleTypeOutputAsync<int>("getWeaponList", this.weapon_list[i]);
+            Debug.Log(result);
+            if (result != null) this.my_weapon_list.Add(this.weapon_list[i], result);
+        }
+        
+        foreach (KeyValuePair<string, int> weapon in this.my_weapon_list)
+        {
+            Debug.Log(weapon.Key + weapon.Value);
+        }
+    }
     
     /* Test Code get Event Result */
     private async Task CallContractTest(EvmContract contract)
