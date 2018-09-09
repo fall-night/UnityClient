@@ -5,36 +5,39 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Loom.Client;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
+using UnityEngine.SceneManagement;
 
 public class SimpleStoreHandler : MonoBehaviour {
 
     // Select an ABI from our project resources
     // We got these from the migration script in Truffle
-    public TextAsset simpleStoreABI;
-    public TextAsset simpleStoreAddress;
+    [SerializeField] private TextAsset contractAbi;
+    [SerializeField] private TextAsset contractAddress;
     
     private List<String> weapon_list = new List<String>();
     private Dictionary<String, int> my_weapon_list = new Dictionary<string, int>();
+    private EvmContract contract;
     
     // Use this for initialization
     public async void Start () {
-        this.weapon_list.Add("A");
-        this.weapon_list.Add("B");
-        
-        // Generate new keys for this user
-        // TODO - Either store these or let the user enter a private key
-        var privateKey = CryptoUtils.GeneratePrivateKey();
+        var privateKey = ReadPrivateKeyFromPlayerPrefs("privateKey");
         var publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
 
         // Get the contract
-        var contract = await GetContract(privateKey, publicKey);
-        contract.EventReceived += EventReceivedHandler;
-        
-        // Make a call
-        await CallAcquireWeapon(contract, "A");
-        await CallGetWeaponList(contract);
-        await CallContractTest(contract);
-        await StaticCallContract(contract);;
+        this.contract = await GetContract(privateKey, publicKey);
+        this.contract.EventReceived += EventReceivedHandler;
+    }
+
+    private static byte[] StringToByteArray(string str)
+    {
+        return System.Convert.FromBase64String(str);
+    }
+    
+    private static byte[] ReadPrivateKeyFromPlayerPrefs (string tag)
+    {
+        string base64String = PlayerPrefs.GetString (tag, null);
+        var key = StringToByteArray(base64String);
+        return key;
     }
 
     // Get's the contract as an object 
@@ -43,11 +46,11 @@ public class SimpleStoreHandler : MonoBehaviour {
         // Get the writer and reader for the Loom node
         var writer = RPCClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithWebSocket("ws://127.0.0.1:46657/websocket")
+            .WithWebSocket("ws://52.79.227.9:8080/websocket/")
             .Create();
         var reader = RPCClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithWebSocket("ws://127.0.0.1:9999/queryws")
+            .WithWebSocket("ws://52.79.227.9:8080/queryws/")
             .Create();
 
         // Create a client object from them
@@ -61,86 +64,43 @@ public class SimpleStoreHandler : MonoBehaviour {
             new SignedTxMiddleware(privateKey)
         });
 
-        // ABI of the Solidity contract
-        string abi = simpleStoreABI.ToString();
-        // Address of the Solidity contract
-        var contractAddr = Address.FromHexString(simpleStoreAddress.ToString());
-        // Address of the user
+        string abi = this.contractAbi.ToString();
+        var contractAddr = Address.FromHexString(this.contractAddress.ToString());
         var callerAddr = Address.FromPublicKey(publicKey);
-        // Return the Contract object
         return new EvmContract(client, contractAddr, callerAddr, abi);
     }
 
-    public async Task StaticCallContract(EvmContract contract)
+    public async void OnClickStartButton()
     {
-        if (contract == null)
-        {
-            throw new Exception("Not signed in!");
-        }
-
-        Debug.Log("Calling smart contract...");
-
-        int result = await contract.StaticCallSimpleTypeOutputAsync<int>("get");
-        if (result != null)
-        {
-            Debug.Log("Smart contract returned: " + result);
-        } else
-        {
-            Debug.LogError("Smart contract didn't return anything!");
-        }
+        await CallStartButton(1);
     }
 
-    private async Task CallAcquireWeapon(EvmContract contract, string weapon)
+    private async Task CallStartButton(int state)
     {
-        await contract.CallAsync("acquireWeapon", weapon);
+        await this.contract.CallAsync("Ready", 1);
     }
-    
-    private async Task CallGetWeaponList(EvmContract contract)
+
+    private class OnStartEvent
     {
-        for (var i = 0; i < this.weapon_list.Count; i++) {
-            Debug.Log(this.weapon_list[i]);
-            var result = await contract.StaticCallSimpleTypeOutputAsync<int>("getWeaponList", this.weapon_list[i]);
-            Debug.Log(result);
-            if (result != null) this.my_weapon_list.Add(this.weapon_list[i], result);
-        }
+        [Parameter("uint", "user1", 1)]
+        public BigInteger User1 { get; set; }
         
-        foreach (KeyValuePair<string, int> weapon in this.my_weapon_list)
-        {
-            Debug.Log(weapon.Key + weapon.Value);
-        }
-    }
-    
-    /* Test Code get Event Result */
-    private async Task CallContractTest(EvmContract contract)
-    {
-        if (contract == null)
-        {
-            throw new Exception("Not signed in!");
-        }
-        Debug.Log("Calling smart contract... testEvent");
+        [Parameter("uint", "user2", 2)]
+        public BigInteger User2 { get; set; }
         
-        await contract.CallAsync("testEvent", 0);
-    }
-    private class OnTestEvent
-    {
-        [Parameter("string", "_state", 1)]
-        public string State { get; set; }
-        
-        //[Parameter("uint", "_rank", 2)]
-        //public BigInteger Rank { get; set; }
-        
-        //[Parameter("uint", "_sender", 3)]
-        //public BigInteger Sender { get; set; }
+//        [Parameter("uint", "user3", 3)]
+//        public BigInteger User3 { get; set; }
     }
     
     private void EventReceivedHandler(object sender, EvmChainEventArgs e)
     {
-        if (e.EventName == "GetTest") {
-            OnTestEvent onTestEvent = e.DecodeEventDTO<OnTestEvent>();
+        if (e.EventName == "StartGame") {
+            OnStartEvent onTestEvent = e.DecodeEventDTO<OnStartEvent>();
             // JsonTileMapState jsonTileMapState = JsonUtility.FromJson<JsonTileMapState>(onTileMapStateUpdateEvent.State);
-            Debug.Log(onTestEvent.State);
-            //Debug.Log(onTestEvent.Rank);
-            //Debug.Log(onTestEvent.Sender);
+            Debug.Log(onTestEvent.User1);
+            Debug.Log(onTestEvent.User2);
+            SceneManager.LoadScene("Scene/GameScene");
+            // Debug.Log(onTestEvent.User3);
         }
 
     }
