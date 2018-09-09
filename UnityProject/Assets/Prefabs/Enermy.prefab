@@ -269,7 +269,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: d9b5c4b878384e44c961717b5342b9c9, type: 3}
   mFont: {fileID: 0}
-  mText: ATACK!
+  mText: ATTACK!
   mFontSize: 50
   mFontStyle: 0
   mAlignment: 0
@@ -307,6 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333be1a6a08a8a24c95e14a66d97ef54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popUp: {fileID: 0}
 --- !u!114 &114510290245036540
 MonoBehaviour:
   m_ObjectHideFlags: 1
