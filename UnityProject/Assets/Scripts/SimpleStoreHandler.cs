@@ -54,11 +54,13 @@ public class SimpleStoreHandler : MonoBehaviour {
         // Get the writer and reader for the Loom node
         var writer = RPCClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithWebSocket("ws://127.0.0.1:46657/websocket")
+            .WithWebSocket("ws://52.79.227.9:8080/websocket/")
+            // .WithWebSocket("ws://127.0.0.1:46657/websocket")
             .Create();
         var reader = RPCClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithWebSocket("ws://127.0.0.1:9999/queryws")
+            .WithWebSocket("ws://52.79.227.9:8080/queryws/")
+            // .WithWebSocket("ws://127.0.0.1:9999/queryws")
             .Create();
 
         // Create a client object from them
