@@ -14,4 +14,9 @@ public class StartButton : MonoBehaviour
 	{
 		SceneManager.LoadScene("Scene/GameScene");
 	}
+
+	public void LobbyScene()
+	{
+		SceneManager.LoadScene("Lobby");
+	}
 }
