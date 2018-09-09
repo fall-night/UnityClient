@@ -53,8 +53,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 72ee048d2c8fac14e82257fdfab4b732, type: 2}
   mSprites:
-  - name: item1
+  - name: Icon_alien Love
+    x: 83
+    y: 186
+    width: 121
+    height: 71
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 16
+    paddingRight: 16
+    paddingTop: 30
+    paddingBottom: 52
+  - name: Icon_KaWaYee
     x: 0
+    y: 182
+    width: 81
+    height: 75
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 4
+    paddingRight: 4
+    paddingTop: 6
+    paddingBottom: 16
+  - name: item1
+    x: 259
     y: 243
     width: 241
     height: 269
@@ -66,6 +92,19 @@ MonoBehaviour:
     paddingRight: 44
     paddingTop: 52
     paddingBottom: 32
+  - name: untitled
+    x: 0
+    y: 259
+    width: 257
+    height: 253
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 52
+    paddingRight: 52
+    paddingTop: 92
+    paddingBottom: 28
   mPixelSize: 1
   mReplacement: {fileID: 0}
   mCoordinates: 0
