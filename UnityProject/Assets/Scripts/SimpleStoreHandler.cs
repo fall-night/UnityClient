@@ -2,21 +2,29 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
+using Assets.Scripts;
 using UnityEngine;
 using Loom.Client;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(LoadSceneHandler))]
 public class SimpleStoreHandler : MonoBehaviour {
 
     // Select an ABI from our project resources
     // We got these from the migration script in Truffle
     [SerializeField] private TextAsset contractAbi;
     [SerializeField] private TextAsset contractAddress;
+    private LoadSceneHandler _loadSceneHandler;
     
     private List<String> weapon_list = new List<String>();
     private Dictionary<String, int> my_weapon_list = new Dictionary<string, int>();
     private EvmContract contract;
+
+    public void Awake()
+    {
+        this._loadSceneHandler = GetComponent<LoadSceneHandler>();
+    }
     
     // Use this for initialization
     public async void Start () {
@@ -46,11 +54,11 @@ public class SimpleStoreHandler : MonoBehaviour {
         // Get the writer and reader for the Loom node
         var writer = RPCClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithWebSocket("ws://52.79.227.9:8080/websocket/")
+            .WithWebSocket("ws://127.0.0.1:46657/websocket")
             .Create();
         var reader = RPCClientFactory.Configure()
             .WithLogger(Debug.unityLogger)
-            .WithWebSocket("ws://52.79.227.9:8080/queryws/")
+            .WithWebSocket("ws://127.0.0.1:9999/queryws")
             .Create();
 
         // Create a client object from them
@@ -94,12 +102,14 @@ public class SimpleStoreHandler : MonoBehaviour {
     
     private void EventReceivedHandler(object sender, EvmChainEventArgs e)
     {
+        Debug.Log("Event");
+        Debug.Log(e.EventName);
         if (e.EventName == "StartGame") {
             OnStartEvent onTestEvent = e.DecodeEventDTO<OnStartEvent>();
             // JsonTileMapState jsonTileMapState = JsonUtility.FromJson<JsonTileMapState>(onTileMapStateUpdateEvent.State);
             Debug.Log(onTestEvent.User1);
             Debug.Log(onTestEvent.User2);
-            SceneManager.LoadScene("Scene/GameScene");
+            this._loadSceneHandler.Load("Scene/GameScene");
             // Debug.Log(onTestEvent.User3);
         }
 
