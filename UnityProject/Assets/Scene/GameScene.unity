@@ -123,6 +123,8 @@ GameObject:
   - component: {fileID: 31121499}
   - component: {fileID: 31121501}
   - component: {fileID: 31121500}
+  - component: {fileID: 31121503}
+  - component: {fileID: 31121502}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -210,6 +212,46 @@ MonoBehaviour:
   mAtlas: {fileID: 114561827169336048, guid: 0a04758062d58af4a8bbeb9c34b8d95b, type: 2}
   mSpriteName: Lobby_07_iteminfo
   mFillCenter: 1
+--- !u!114 &31121502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 31121498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fdca5042b1d12a4890ec1bd4f04290d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tweenTarget: {fileID: 31121498}
+  hover: {r: 1, g: 1, b: 1, a: 1}
+  pressed: {r: 1, g: 1, b: 1, a: 1}
+  disabledColor: {r: 1, g: 1, b: 1, a: 1}
+  duration: 0.2
+  dragHighlight: 0
+  hoverSprite: 
+  pressedSprite: 
+  disabledSprite: 
+  hoverSprite2D: {fileID: 0}
+  pressedSprite2D: {fileID: 0}
+  disabledSprite2D: {fileID: 0}
+  pixelSnap: 0
+  onClick:
+  - mTarget: {fileID: 31121503}
+    mMethodName: Attack
+    mParameters: []
+    oneShot: 0
+--- !u!114 &31121503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 31121498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 333be1a6a08a8a24c95e14a66d97ef54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &127923929
 GameObject:
   m_ObjectHideFlags: 0
